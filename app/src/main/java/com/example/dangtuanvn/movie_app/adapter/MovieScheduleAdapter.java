@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.dangtuanvn.movie_app.GridItemCallBack;
 import com.example.dangtuanvn.movie_app.R;
 
 
@@ -19,11 +20,13 @@ public class MovieScheduleAdapter extends BaseAdapter {
     private final Context context;
     private ArrayList<String> timeList;
     private ArrayList<String> dateList;
+    GridItemCallBack callback;
 
-    public MovieScheduleAdapter(Context context, ArrayList<String> dateList, ArrayList<String> timeList) {
+    public MovieScheduleAdapter(Context context, ArrayList<String> dateList, ArrayList<String> timeList,GridItemCallBack callback) {
         this.dateList = dateList;
         this.context = context;
         this.timeList = timeList;
+        this.callback= callback;
     }
 
     private static class ViewHolder {
@@ -32,6 +35,7 @@ public class MovieScheduleAdapter extends BaseAdapter {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
+
         ViewHolder holder;
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,8 +55,9 @@ public class MovieScheduleAdapter extends BaseAdapter {
         }
 
         holder.time.setText(dateList.get(position));
-
+        callback.onFirstItemCreate(convertView);
         return convertView;
+
     }
 
     @Override

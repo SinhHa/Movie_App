@@ -1,42 +1,34 @@
 package com.example.dangtuanvn.movie_app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.MediaController;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.example.dangtuanvn.movie_app.adapter.MovieDetailAdapter;
 import com.example.dangtuanvn.movie_app.adapter.MovieScheduleAdapter;
 import com.example.dangtuanvn.movie_app.adapter.ScheduleExpandableAdapter;
 import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
@@ -47,9 +39,14 @@ import com.example.dangtuanvn.movie_app.model.MovieDetail;
 import com.example.dangtuanvn.movie_app.model.MovieTrailer;
 import com.example.dangtuanvn.movie_app.model.Schedule;
 import com.example.dangtuanvn.movie_app.model.ScheduleCinemaGroupList;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,37 +55,56 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 /**
  * Created by sinhhx on 11/15/16.
  */
 public class MovieDetailActivity extends AppCompatActivity {
     private Toolbar mytoolbar;
-    private  VideoView video;
+    private VideoView video;
     private FrameLayout videolayout;
-    private  Button playbtn;
-    private  TextView duration;
-    private  TextView start;
+    private Button playbtn;
+    private TextView duration;
+    private TextView start;
     private SeekBar progress;
-    private  TextView movieTitle;
-    private  TextView PG;
-    private  TextView IMDB;
-    private  TextView length;
-    private  TextView date;
-    private  TextView movieDescription;
-    private  TextView directorName;
-    private  TextView writerName;
+    private TextView movieTitle;
+    private TextView PG;
+    private TextView IMDB;
+    private TextView length;
+    private TextView date;
+    private TextView movieDescription;
+    private TextView directorName;
+    private TextView writerName;
     private Button backBtn;
-    private  TextView starName;
-    private  RecyclerView allSchedule;
-    private  Button more;
-    private  GridView movieSchedule;
+    private TextView starName;
+    private RecyclerView allSchedule;
+    private Button more;
+    private GridView movieSchedule;
     private Calendar dateTime = Calendar.getInstance();
     private ArrayList<String> dateList = new ArrayList<>();
     private ArrayList<String> displayDate = new ArrayList<>();
     private ArrayList<String> timeList = new ArrayList<>();
+    boolean firstTime =true;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+    GridItemCallBack callback = new GridItemCallBack() {
+        @Override
+        public void onFirstItemCreate(View convertView) {
+            if(firstTime){
+                movieSchedule.performItemClick(convertView, 0, 0);
+                firstTime=false;
+                movieSchedule.setEnabled(true);
+            }
 
+        }
+    };
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_detail);
@@ -108,10 +124,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         starName = (TextView) findViewById(R.id.star_name);
         more = (Button) findViewById(R.id.more);
         movieSchedule = (GridView) findViewById(R.id.movie_schedule);
-        backBtn= (Button) findViewById(R.id.back);
+        backBtn = (Button) findViewById(R.id.back);
         duration = (TextView) findViewById(R.id.duration);
-        progress=(SeekBar) findViewById(R.id.progress);
-        start=(TextView) findViewById(R.id.current_time);
+        progress = (SeekBar) findViewById(R.id.progress);
+        start = (TextView) findViewById(R.id.current_time);
 //        mytoolbar = (Toolbar)findViewById(R.id.my_toolbar);
 //        mytoolbar.setNavigationIcon(R.drawable.back_btn);
 //        mytoolbar.setTitle("");
@@ -144,7 +160,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 //        movieDetail.setLayoutManager(layoutManager);
 
 
-        backBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back_btn,0,0,0);
+        backBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back_btn, 0, 0, 0);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +173,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         final Target mTarget = new Target() {
             @Override
             public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+
                 DisplayMetrics metrics = new DisplayMetrics();
                 WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
                 wm.getDefaultDisplay().getMetrics(metrics);
@@ -175,6 +192,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
+                Log.d("failed", "failed");
 
             }
 
@@ -185,100 +203,20 @@ public class MovieDetailActivity extends AppCompatActivity {
         };
 
         // Create a handler with delay of 500 so these code will run after the image has loaded
-        Handler handlerVideo = new Handler();
-        handlerVideo.postDelayed(new Runnable() {
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Picasso.with(getApplication())
+                Picasso.with(MovieDetailActivity.this)
                         .load(posterUrl)
-                        .into(mTarget)
-                ;
+                        .into(mTarget);
+                setUpTrailer(movieTrailerFDS);
 
-                movieTrailerFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-                    @Override
-                    public void onDataRetrievedListener(List<?> list, Exception ex) {
-                        List<MovieTrailer> movieTrailer = (List<MovieTrailer>) list;
-                        try {
-                            Uri uri = Uri.parse(movieTrailer.get(0).getV720p());
-
-                            video.setVideoURI(uri);
-
-                        } catch (NullPointerException e) {
-                            // TODO fix url null
-                        }
-                    }
-                });
-                progress.setMax(video.getDuration());
-                final DecimalFormat formatter = new DecimalFormat("00");
-//                video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//                    @Override
-//                    public void onPrepared(MediaPlayer mediaPlayer) {
-//                        duration.setText(formatter.format((video.getDuration()/1000)/60)+":"+formatter.format(video.getDuration()/1000%60));
-//                    }
-//                });
-                progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                        if(b) {
-                            // this is when actually seekbar has been seeked to a new position
-                            video.seekTo(i);
-                            start.setText((formatter.format((video.getCurrentPosition()/1000)/60)+":"+formatter.format(video.getCurrentPosition()/1000%60)));
-                        }
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-
-                    }
-                });
-                video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mediaPlayer) {
-                        duration.setText((formatter.format((video.getDuration()/1000)/60)+":"+formatter.format(video.getDuration()/1000%60)));
-                    }
-                });
-
-                playbtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        video.setBackgroundResource(0);
-                        video.start();
-                        playbtn.setVisibility(View.GONE);
-
-                        progress.postDelayed(onEverySecond, 1000);
-
-                    }
-                });
-
-                video.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-
-                        if (video.isPlaying() == false ) {
-                            video.setBackgroundResource(0);
-                            video.start();
-                            playbtn.setVisibility(View.GONE);
-//                            progress.setMax(video.getDuration());
-//                            progress.setProgress(video.getDuration());
-                            progress.postDelayed(onEverySecond, 1000);
-                            return false;
-                        }
-                        if(video.isPlaying()== true){
-                            video.pause();
-                        }
-
-
-                        return false;
-                    }
-
-                });
             }
         }, 500);
+
 
 
         IMDB.setCompoundDrawablesWithIntrinsicBounds(R.drawable.star_60, 0, 0, 0);
@@ -295,7 +233,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 IMDB.setText(detailList.get(0).getImdbPoint() + " IMDB");
                 String duration = detailList.get(0).getDuration() / 60 + "h " + detailList.get(0).getDuration() % 60 + "min";
                 length.setText(duration);
-                String date_before =  detailList.get(0).getPublishDate();
+                String date_before = detailList.get(0).getPublishDate();
                 String date_after = formateDateFromstring("yyyy-MM-dd", "dd MMM yyyy", date_before);
                 date.setText(date_after);
                 movieDescription.setText("" + detailList.get(0).getDescriptionMobile());
@@ -343,7 +281,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }
 
-        final MovieScheduleAdapter movieScheduleAdapter = new MovieScheduleAdapter(this, displayDate, timeList);
+        final MovieScheduleAdapter movieScheduleAdapter = new MovieScheduleAdapter(this, displayDate, timeList,callback);
         movieSchedule.setAdapter(movieScheduleAdapter);
 
         movieSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -362,12 +300,17 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
 
         // Disable input for the schedule before it is ready
-        movieSchedule.setEnabled(false);
+      //  movieSchedule.setEnabled(false);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+
     @Override
-    protected void onPostCreate (Bundle savedInstanceState){
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
 
         // Default schedule selection of Today
         final int position = 0;
@@ -384,6 +327,11 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         }, 500);
     }
+
+
+
+
+
 
     private void displayScheduleExpandableList(final List<Schedule> scheduleList) {
         // TODO: Simplify this process
@@ -424,13 +372,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         allSchedule.setAdapter(recyclerExpandableView);
         allSchedule.setLayoutManager(new LinearLayoutManager(this));
     }
-    public static String formateDateFromstring(String inputFormat, String outputFormat, String inputDate){
+
+    public static String formateDateFromstring(String inputFormat, String outputFormat, String inputDate) {
 
         Date parsed = null;
         String outputDate = "";
 
-        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, java.util.Locale.getDefault());
-        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, java.util.Locale.getDefault());
+        SimpleDateFormat df_input = new SimpleDateFormat(inputFormat, Locale.getDefault());
+        SimpleDateFormat df_output = new SimpleDateFormat(outputFormat, Locale.getDefault());
 
         try {
             parsed = df_input.parse(inputDate);
@@ -442,22 +391,166 @@ public class MovieDetailActivity extends AppCompatActivity {
         return outputDate;
 
     }
-    private Runnable onEverySecond=new Runnable() {
+
+    public void setUpTrailer(FeedDataStore movieTrailerFDS){
+        movieTrailerFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+            @Override
+            public void onDataRetrievedListener(List<?> list, Exception ex) {
+                List<MovieTrailer> movieTrailer = (List<MovieTrailer>) list;
+                try {
+                    Uri uri = Uri.parse(movieTrailer.get(0).getV720p());
+
+                    video.setVideoURI(uri);
+
+                } catch (NullPointerException e) {
+                    // TODO fix url null
+                }
+            }
+        });
+        progress.setMax(video.getDuration());
+        final DecimalFormat formatter = new DecimalFormat("00");
+//                video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//                    @Override
+//                    public void onPrepared(MediaPlayer mediaPlayer) {
+//                        duration.setText(formatter.format((video.getDuration()/1000)/60)+":"+formatter.format(video.getDuration()/1000%60));
+//                    }
+//                });
+        progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if (b) {
+                    // this is when actually seekbar has been seeked to a new position
+                    video.seekTo(i);
+                    start.setText((formatter.format((video.getCurrentPosition() / 1000) / 60) + ":" + formatter.format(video.getCurrentPosition() / 1000 % 60)));
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                duration.setText((formatter.format((video.getDuration() / 1000) / 60) + ":" + formatter.format(video.getDuration() / 1000 % 60)));
+            }
+        });
+
+        playbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                video.setBackgroundResource(0);
+                video.start();
+                playbtn.setVisibility(View.GONE);
+
+                progress.postDelayed(onEverySecond, 1000);
+
+            }
+        });
+
+        video.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (video.isPlaying() == false) {
+                    video.setBackgroundResource(0);
+                    video.start();
+                    playbtn.setVisibility(View.GONE);
+//                            progress.setMax(video.getDuration());
+//                            progress.setProgress(video.getDuration());
+                    progress.postDelayed(onEverySecond, 1000);
+                    return false;
+                }
+                if (video.isPlaying() == true) {
+                    video.pause();
+                }
+
+
+                return false;
+            }
+
+        });
+    }
+
+
+
+    private Runnable onEverySecond = new Runnable() {
 
         @Override
         public void run() {
             progress.setMax(video.getDuration());
-            if(progress != null) {
+            if (progress != null) {
                 progress.setProgress(video.getCurrentPosition());
             }
-            if(video.isPlaying()) {
+            if (video.isPlaying()) {
                 progress.postDelayed(onEverySecond, 1000);
             }
             DecimalFormat formatter = new DecimalFormat("00");
-            start.setText((formatter.format((video.getCurrentPosition()/1000)/60)+":"+formatter.format(video.getCurrentPosition()/1000%60)));
+            start.setText((formatter.format((video.getCurrentPosition() / 1000) / 60) + ":" + formatter.format(video.getCurrentPosition() / 1000 % 60)));
 
         }
     };
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "MovieDetail Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.example.dangtuanvn.movie_app/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "MovieDetail Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.example.dangtuanvn.movie_app/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
+
+
+    public void setFirstTab() {
+        int position = 0;
+        movieSchedule.performItemClick(movieSchedule.getAdapter().getView(position, null, movieSchedule), 0, position);
+//                movieSchedule.getAdapter().getView(position, null, movieSchedule).performClick();
+        View v = movieSchedule.getChildAt(position);
+        if (v != null) {
+            v.setPressed(true);
+        }
+        movieSchedule.setEnabled(true);
+    }
+
+
+
 //    @Override
 //    public void onItemClick(View view, Object data, int position) {
 //        Log.i("ITEM CLICK", "" + position);

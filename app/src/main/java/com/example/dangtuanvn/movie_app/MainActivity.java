@@ -15,7 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.dangtuanvn.movie_app.adapter.TabViewPagerAdapter;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     // int array contain icon for tabs
     private int[] imageResId = {R.drawable.tabshowing, R.drawable.tabupcomingicon, R.drawable.tabaroundicon, R.drawable.tabnewsicon};
 
@@ -43,5 +43,7 @@ public class MainActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             this.startActivity(intent);
         }
+
+
     }
 }

@@ -295,9 +295,9 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
                     displayDate.add(i, f.format(dateTime.getTime()));
                 }
             }
-            MovieScheduleAdapter movieScheduleAdapter = new MovieScheduleAdapter(context, displayDate, timeList);
+         //   MovieScheduleAdapter movieScheduleAdapter = new MovieScheduleAdapter(context, displayDate, timeList);
 
-            holder.movieSchedule.setAdapter(movieScheduleAdapter);
+          //  holder.movieSchedule.setAdapter(movieScheduleAdapter);
 
             holder.movieSchedule.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

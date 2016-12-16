@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.dangtuanvn.movie_app.MVP.MvpAllTabFragment;
 import com.example.dangtuanvn.movie_app.MainActivity;
 import com.example.dangtuanvn.movie_app.NoInternetActivity;
 import com.example.dangtuanvn.movie_app.fragment.NoInternetFragment;
@@ -35,26 +36,18 @@ public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public android.support.v4.app.Fragment getItem(int position) {
-        // Check for network connection
-//        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-//        if (networkInfo != null && networkInfo.isConnected()) {
-            if (position == 0) {
-                return MovieTabFragment.newInstance(MovieTabFragment.CinemaTab.values()[0]);
-            } else if (position == 1) {
-                return MovieTabFragment.newInstance(MovieTabFragment.CinemaTab.values()[1]);
-            } else if (position == 2) {
-                return CinemaTabFragment.newInstance();
-            } else if (position == 3) {
-                return NewsTabFragment.newInstance();
-            }
-//        } else {
-//            Intent intent = new Intent(context, NoInternetActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            context.startActivity(intent);
-//            return NoInternetFragment.newInstance();
+
+//        if (position == 0) {
+//            return MovieTabFragment.newInstance(MovieTabFragment.CinemaTab.values()[0]);
+//        } else if (position == 1) {
+//            return MovieTabFragment.newInstance(MovieTabFragment.CinemaTab.values()[1]);
+//        } else if (position == 2) {
+//            return CinemaTabFragment.newInstance();
+//        } else if (position == 3) {
+//            return NewsTabFragment.newInstance();
 //        }
-        return null;
+
+        return MvpAllTabFragment.newInstance(position);
     }
 
     @Override
