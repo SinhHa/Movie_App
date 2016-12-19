@@ -1,6 +1,8 @@
 package com.example.dangtuanvn.movie_app.datastore;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.dangtuanvn.movie_app.model.MovieTrailer;
 import com.example.dangtuanvn.movie_app.model.converter.MovieTrailerDeserializer;
@@ -21,9 +23,10 @@ import java.util.List;
 public class MovieTrailerFeedDataStore extends DataStore {
     private String url = BASE_URL + "film/trailer?film_id=";
     private int movieId;
-
+    Context context;
     public MovieTrailerFeedDataStore(Context context, int movieId) {
         super(context);
+        this.context =context;
         this.movieId = movieId;
     }
 
@@ -43,11 +46,21 @@ public class MovieTrailerFeedDataStore extends DataStore {
             return Collections.singletonList(movieTrailer);
         }
         catch (Exception e){
-            // TODO: HANDLE NULL
+            messageBox("Retrieve data fail",e.getMessage());
             return null;
         }
     }
+    private void messageBox(String method, String message)
+    {
+        Log.d("EXCEPTION: " + method,  message);
 
+        AlertDialog.Builder messageBox = new AlertDialog.Builder(context);
+        messageBox.setTitle(method);
+        messageBox.setMessage(message);
+        messageBox.setCancelable(false);
+        messageBox.setNeutralButton("OK", null);
+        messageBox.show();
+    }
     @Override
     protected String setUrl(){
         return url + movieId;

@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.dangtuanvn.movie_app.MVP.MovieTabMvp;
 import com.example.dangtuanvn.movie_app.MVP.MvpAllTabFragment;
 import com.example.dangtuanvn.movie_app.MainActivity;
 import com.example.dangtuanvn.movie_app.NoInternetActivity;
@@ -37,17 +38,18 @@ public class TabViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public android.support.v4.app.Fragment getItem(int position) {
 
-//        if (position == 0) {
-//            return MovieTabFragment.newInstance(MovieTabFragment.CinemaTab.values()[0]);
-//        } else if (position == 1) {
-//            return MovieTabFragment.newInstance(MovieTabFragment.CinemaTab.values()[1]);
-//        } else if (position == 2) {
+        if (position == 0) {
+            return MovieTabMvp.newInstance(position);
+        } else if (position == 1) {
+            return MovieTabMvp.newInstance(position);
+        }
+        //else if (position == 2) {
 //            return CinemaTabFragment.newInstance();
 //        } else if (position == 3) {
 //            return NewsTabFragment.newInstance();
 //        }
-
-        return MvpAllTabFragment.newInstance(position);
+else{
+        return MvpAllTabFragment.newInstance(position);}
     }
 
     @Override

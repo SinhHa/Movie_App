@@ -75,7 +75,7 @@ public class MvpAllTabPresenterImp extends MvpNullObjectBasePresenter<MvpAllTabV
             @Override
             public void onDataRetrievedListener(List<?> list, Exception ex) {
                 getView().setUpNews(list);
-
+                getView().setOnItemTouch(list);
 
             }
         });

@@ -3,6 +3,7 @@ package com.example.dangtuanvn.movie_app.MVP.Interface;
 
 
 import com.example.dangtuanvn.movie_app.MVP.Module.MovieComponentModule;
+import com.example.dangtuanvn.movie_app.MVP.Presenter.MovieTabPresenterImp;
 import com.example.dangtuanvn.movie_app.MVP.Presenter.MvpAllTabPresenterImp;
 import com.example.dangtuanvn.movie_app.MVP.View.MvpAllTabView;
 
