@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import com.example.dangtuanvn.movie_app.MVP.Interface.MainPresenter;
 import com.example.dangtuanvn.movie_app.MVP.View.MainView;
 import com.example.dangtuanvn.movie_app.adapter.TabViewPagerAdapter;
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
 /**
@@ -15,21 +16,15 @@ import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
  */
 public class MainPresenterImp extends MvpNullObjectBasePresenter<MainView> implements MainPresenter {
     ConnectivityManager connectivityManager;
-    FragmentManager supportFragmentManager;
-    Context context;
-    public MainPresenterImp(ConnectivityManager connectivityManager, FragmentManager supportFragmentManager, Context context){
+
+    public MainPresenterImp(ConnectivityManager connectivityManager ){
         this.connectivityManager = connectivityManager;
-        this.supportFragmentManager = supportFragmentManager;
-        this.context =context;
     }
     @Override
     public void getPagerContent() {
 
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            getView().setupUI();
-          TabViewPagerAdapter adapter=  new TabViewPagerAdapter(supportFragmentManager, context);
-            getView().setupViewPager(adapter);
             getView().configTablayout();
     }
         else{

@@ -8,4 +8,7 @@ import com.hannesdorfmann.mosby.mvp.MvpPresenter;
  */
 public interface MovieDetailPresenter extends MvpPresenter<MovieDetailView> {
     void getTrailerPoster(String posterUrl);
+    void getTrailerContent(int movieId);
+    void getMovieDiscription(int movieId);
+    void getSchedule(int movieId,String position);
 }

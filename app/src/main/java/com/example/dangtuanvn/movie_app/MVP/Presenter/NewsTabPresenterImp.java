@@ -7,6 +7,7 @@ import com.example.dangtuanvn.movie_app.MVP.Interface.NewsTabPresenter;
 import com.example.dangtuanvn.movie_app.MVP.View.NewsTabView;
 import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.NewsFeedDataStore;
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class NewsTabPresenterImp extends MvpNullObjectBasePresenter<NewsTabView>
             @Override
             public void onDataRetrievedListener(List<?> list, Exception ex) {
                 getView().setUpNews(list);
-                getView().setOnItemTouch(list);
+
 
             }
         });

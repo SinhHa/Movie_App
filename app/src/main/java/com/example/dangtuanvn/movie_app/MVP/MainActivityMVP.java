@@ -26,27 +26,24 @@ public class MainActivityMVP extends MvpActivity<MainView,MainPresenter> impleme
     @NonNull
     @Override
     public MainPresenter createPresenter() {
-        return new MainPresenterImp((ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE), getSupportFragmentManager(),this);
+        return new MainPresenterImp((ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE));
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setupUI();
+        TabViewPagerAdapter adapter=  new TabViewPagerAdapter(getSupportFragmentManager(),this);
+        viewPager.setAdapter(adapter);
         getPresenter().getPagerContent();
-        getPresenter().attachView(this);
     }
 
-    @Override
     public void setupUI() {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         viewPager.setOffscreenPageLimit(4);
     }
 
-    @Override
-    public void setupViewPager(TabViewPagerAdapter adapter) {
-        viewPager.setAdapter(adapter);
-    }
 
     @Override
     public void configTablayout() {
@@ -65,7 +62,6 @@ public class MainActivityMVP extends MvpActivity<MainView,MainPresenter> impleme
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getPresenter().detachView(false);
     }
 
 

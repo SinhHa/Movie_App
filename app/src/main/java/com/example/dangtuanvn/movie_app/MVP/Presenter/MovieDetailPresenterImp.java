@@ -3,20 +3,22 @@ package com.example.dangtuanvn.movie_app.MVP.Presenter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.DisplayMetrics;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.VideoView;
-
 import com.example.dangtuanvn.movie_app.MVP.Interface.MovieDetailPresenter;
 import com.example.dangtuanvn.movie_app.MVP.View.MovieDetailView;
+import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
+import com.example.dangtuanvn.movie_app.datastore.MovieDetailFeedDataStore;
+import com.example.dangtuanvn.movie_app.datastore.MovieTrailerFeedDataStore;
+import com.example.dangtuanvn.movie_app.datastore.ScheduleFeedDataStore;
+import com.example.dangtuanvn.movie_app.model.MovieTrailer;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by sinhhx on 12/19/16.
@@ -31,6 +33,48 @@ public class MovieDetailPresenterImp extends MvpNullObjectBasePresenter<MovieDet
     new setTrailerposter().execute(posterUrl);
     }
 
+    @Override
+    public void getTrailerContent(int movieId) {
+         FeedDataStore movieTrailerFDS = new MovieTrailerFeedDataStore(context, movieId);
+        movieTrailerFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+            @Override
+            public void onDataRetrievedListener(List<?> list, Exception ex) {
+                List<MovieTrailer> movieTrailer = (List<MovieTrailer>) list;
+                try {
+                    Uri uri = Uri.parse(movieTrailer.get(0).getV720p());
+                    getView().setUpTrailer(uri);
+                } catch (NullPointerException e) {
+                    // TODO fix url null
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getMovieDiscription(int movieId) {
+        FeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
+        movieDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+            @Override
+            public void onDataRetrievedListener(List<?> list, Exception ex) {
+            getView().setUpMovieDiscription(list);
+            }
+        });
+    }
+
+    @Override
+    public void getSchedule(int movieId, String position) {
+        FeedDataStore scheduleFDS = new ScheduleFeedDataStore(context, movieId, position);
+        scheduleFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+            @Override
+            public void onDataRetrievedListener(List<?> list, Exception ex) {
+            getView().displayScheduleExpandableList(list);
+            }
+        });
+    }
+
+
+
+    //download userposter from url after finish call view to set image to videoview
     private class setTrailerposter extends AsyncTask<String, Void, Bitmap> {
         @Override
         protected Bitmap doInBackground(String... params) {

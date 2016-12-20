@@ -81,6 +81,7 @@ public class NewsTabMvp extends MvpFragment<NewsTabView, NewsTabPresenter> imple
         List<News> news = (List<News>) data;
         NewsTabAdapter mAdapter = new NewsTabAdapter(getContext(),news);
         mRecyclerView.setAdapter(mAdapter);
+        setOnItemTouch(data);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class NewsTabMvp extends MvpFragment<NewsTabView, NewsTabPresenter> imple
     }
 
 
-    @Override
+
     public void setOnItemTouch(final List<?> datalist) {
         if (!hasTouch) {
             final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {

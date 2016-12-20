@@ -7,8 +7,6 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
  * Created by sinhhx on 12/7/16.
  */
 public interface MainView extends MvpView {
-    void setupUI();
-    void setupViewPager(TabViewPagerAdapter adapter);
     void configTablayout();
     void noInternetError();
 }

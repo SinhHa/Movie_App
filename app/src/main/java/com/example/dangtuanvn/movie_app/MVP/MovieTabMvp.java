@@ -39,8 +39,7 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
 
     @Override
     public MovieTabPresenter createPresenter() {
-        return new MovieTabPresenterImp(getContext(),mPage) {
-        };
+        return new MovieTabPresenterImp(getContext(),mPage);
     }
 
     public static MovieTabMvp newInstance(int mPage) {
@@ -86,6 +85,11 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
         List<Movie> movie = (List<Movie>) data;
         MovieTabAdapter mAdapter = new MovieTabAdapter(getContext(), movie, mPage);
         mRecyclerView.setAdapter(mAdapter);
+        setOnClickListener(data);
+
+    }
+
+    public void setOnClickListener(final List<?> data){
         if (!hasTouch) {
             final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -144,7 +148,8 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
         super.onStart();
         swipeLayout.setOnRefreshListener(creatOnRefreshListener());
         getPresenter().getMoviesInfo();
-    }
+   }
+
 
     public SwipeRefreshLayout.OnRefreshListener creatOnRefreshListener() {
         SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {

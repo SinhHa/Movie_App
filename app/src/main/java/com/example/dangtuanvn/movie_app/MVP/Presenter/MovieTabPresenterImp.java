@@ -5,6 +5,7 @@ import com.example.dangtuanvn.movie_app.MVP.Interface.MovieTabPresenter;
 import com.example.dangtuanvn.movie_app.MVP.View.MovieTabView;
 import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.MovieFeedDataStore;
+import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
 import java.util.List;
@@ -43,7 +44,6 @@ public class MovieTabPresenterImp extends MvpNullObjectBasePresenter<MovieTabVie
             public void onDataRetrievedListener(List<?> list, Exception ex) {
 
                 getView().setUpMovies(list);
-                getView().setOnItemTouch(list);
             }
         });
     }

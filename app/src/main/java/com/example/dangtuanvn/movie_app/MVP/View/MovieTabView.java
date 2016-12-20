@@ -10,5 +10,4 @@ import java.util.List;
 public interface MovieTabView extends MvpView {
     void setUpMovies( List<?> data);
     void setRefresh(boolean refresh);
-    void setOnItemTouch(final List<?> list);
 }

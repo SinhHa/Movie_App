@@ -10,5 +10,4 @@ import java.util.List;
 public interface NewsTabView  extends MvpView {
     void setUpNews( List<?> data);
     void setRefresh(boolean refresh);
-    void setOnItemTouch(final List<?> list);
 }
