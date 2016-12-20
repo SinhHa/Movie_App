@@ -33,6 +33,7 @@ public class MainActivityMVP extends MvpActivity<MainView,MainPresenter> impleme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getPresenter().getPagerContent();
+        getPresenter().attachView(this);
     }
 
     @Override
@@ -60,6 +61,11 @@ public class MainActivityMVP extends MvpActivity<MainView,MainPresenter> impleme
         Intent intent = new Intent(this, NoInternetActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         this.startActivity(intent);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getPresenter().detachView(false);
     }
 
 

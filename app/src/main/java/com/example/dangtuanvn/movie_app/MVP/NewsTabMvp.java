@@ -16,13 +16,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dangtuanvn.movie_app.MVP.Interface.MovieTabPresenter;
-import com.example.dangtuanvn.movie_app.MVP.Presenter.MovieTabPresenterImp;
-import com.example.dangtuanvn.movie_app.MVP.View.MovieTabView;
+import com.example.dangtuanvn.movie_app.MVP.Interface.NewsTabPresenter;
+import com.example.dangtuanvn.movie_app.MVP.Presenter.NewsTabPresenterImp;
+import com.example.dangtuanvn.movie_app.MVP.View.NewsTabView;
+import com.example.dangtuanvn.movie_app.NewsDetailActivity;
 import com.example.dangtuanvn.movie_app.NoInternetActivity;
 import com.example.dangtuanvn.movie_app.R;
-import com.example.dangtuanvn.movie_app.adapter.MovieTabAdapter;
-import com.example.dangtuanvn.movie_app.model.Movie;
+import com.example.dangtuanvn.movie_app.adapter.NewsTabAdapter;
+import com.example.dangtuanvn.movie_app.model.News;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.List;
@@ -30,23 +31,19 @@ import java.util.List;
 /**
  * Created by sinhhx on 12/19/16.
  */
-public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> implements MovieTabView {
+public class NewsTabMvp extends MvpFragment<NewsTabView, NewsTabPresenter> implements NewsTabView {
+    @Override
+    public NewsTabPresenter createPresenter() {
+        return new NewsTabPresenterImp(getContext());
+    }
 
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout swipeLayout;
     private boolean hasTouch = false;
-    int mPage;
 
-    @Override
-    public MovieTabPresenter createPresenter() {
-        return new MovieTabPresenterImp(getContext(),mPage) {
-        };
-    }
-
-    public static MovieTabMvp newInstance(int mPage) {
+    public static NewsTabMvp newInstance() {
         Bundle args = new Bundle();
-        args.putInt("cinema_tab", mPage);
-        MovieTabMvp fragment = new MovieTabMvp();
+        NewsTabMvp fragment = new NewsTabMvp();
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,7 +51,7 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt("cinema_tab");
+
     }
 
     @Override
@@ -80,9 +77,9 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
     }
 
     @Override
-    public void setUpMovies(List<?> data) {
-        List<Movie> movie = (List<Movie>) data;
-        MovieTabAdapter mAdapter = new MovieTabAdapter(getContext(), movie, mPage);
+    public void setUpNews(List<?> data) {
+        List<News> news = (List<News>) data;
+        NewsTabAdapter mAdapter = new NewsTabAdapter(getContext(),news);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -111,11 +108,10 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
                     if (networkInfo != null && networkInfo.isConnected()) {
                         final View childView = rv.findChildViewUnder(e.getX(), e.getY());
                         if (childView != null && mGestureDetector.onTouchEvent(e)) {
-                            List<Movie> list;
-                            list = (List<Movie>) datalist;
-                            Intent intent = new Intent(getContext(), MovieDetailMvp.class);
-                            intent.putExtra("movieId", list.get(rv.getChildAdapterPosition(childView)).getFilmId());
-                            intent.putExtra("posterUrl", list.get(rv.getChildAdapterPosition(childView)).getPosterLandscape());
+                            List<News> list;
+                            list = (List<News>) datalist;
+                            Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+                            intent.putExtra("data", list.get(0).getShortContent());
                             getContext().startActivity(intent);
                         }
 
@@ -145,7 +141,7 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
     @Override
     public void onStart() {
         super.onStart();
-        getPresenter().getMoviesInfo();
+        getPresenter().getNewsInfo();
         swipeLayout.setOnRefreshListener(creatOnRefreshListener());
     }
 
@@ -159,7 +155,7 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
                 handlerFDS.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        getPresenter().getMoviesInfo();
+                        getPresenter().getNewsInfo();
                         setRefresh(false);
                     }
                 }, 500);
@@ -171,3 +167,4 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
 
 
 }
+

@@ -42,6 +42,9 @@
         <activity
             android:name=".NoInternetActivity"
             android:screenOrientation="portrait"></activity>
+        <activity android:name=".MVP.MovieDetailMvp"
+            android:screenOrientation="portrait"></activity>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

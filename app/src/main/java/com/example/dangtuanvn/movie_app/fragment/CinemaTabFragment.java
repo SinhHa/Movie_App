@@ -575,15 +575,6 @@ public class CinemaTabFragment extends Fragment {
         }
     }
 
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        FragmentManager fm = getChildFragmentManager();
-//        Fragment fragment = fm.findFragmentByTag("map_fragment");
-//        fm.beginTransaction()
-//                .remove(fragment)
-//                .addToBackStack(null)
-//                .commitAllowingStateLoss();
-//    }
+
 }
 

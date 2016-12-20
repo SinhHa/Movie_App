@@ -50,12 +50,17 @@ public class MovieScheduleAdapter extends BaseAdapter {
         }
         if (position == 0) {
             holder.date.setText("Today");
+
         } else {
             holder.date.setText(timeList.get(position));
         }
 
+
         holder.time.setText(dateList.get(position));
-        callback.onFirstItemCreate(convertView);
+
+        if(position==0){
+            callback.onFirstItemCreate(convertView);
+        }
         return convertView;
 
     }

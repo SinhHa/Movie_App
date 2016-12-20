@@ -1,10 +1,11 @@
 package com.example.dangtuanvn.movie_app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,19 +13,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -39,13 +39,12 @@ import com.example.dangtuanvn.movie_app.model.MovieDetail;
 import com.example.dangtuanvn.movie_app.model.MovieTrailer;
 import com.example.dangtuanvn.movie_app.model.Schedule;
 import com.example.dangtuanvn.movie_app.model.ScheduleCinemaGroupList;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -58,13 +57,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import javax.inject.Inject;
 
 /**
  * Created by sinhhx on 11/15/16.
  */
 public class MovieDetailActivity extends AppCompatActivity {
-    private Toolbar mytoolbar;
     private VideoView video;
     private FrameLayout videolayout;
     private Button playbtn;
@@ -79,6 +76,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView movieDescription;
     private TextView directorName;
     private TextView writerName;
+    private ImageView image;
     private Button backBtn;
     private TextView starName;
     private RecyclerView allSchedule;
@@ -88,20 +86,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ArrayList<String> dateList = new ArrayList<>();
     private ArrayList<String> displayDate = new ArrayList<>();
     private ArrayList<String> timeList = new ArrayList<>();
-    boolean firstTime =true;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
-    private GoogleApiClient client;
     GridItemCallBack callback = new GridItemCallBack() {
         @Override
         public void onFirstItemCreate(View convertView) {
-            if(firstTime){
-                movieSchedule.performItemClick(convertView, 0, 0);
-                firstTime=false;
-                movieSchedule.setEnabled(true);
-            }
+            movieSchedule.performItemClick(convertView,0, 0);
 
         }
     };
@@ -121,6 +113,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieDescription = (TextView) findViewById(R.id.movie_description);
         directorName = (TextView) findViewById(R.id.director_name);
         writerName = (TextView) findViewById(R.id.writer_name);
+        image =(ImageView)findViewById(R.id.test);
         starName = (TextView) findViewById(R.id.star_name);
         more = (Button) findViewById(R.id.more);
         movieSchedule = (GridView) findViewById(R.id.movie_schedule);
@@ -128,36 +121,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         duration = (TextView) findViewById(R.id.duration);
         progress = (SeekBar) findViewById(R.id.progress);
         start = (TextView) findViewById(R.id.current_time);
-//        mytoolbar = (Toolbar)findViewById(R.id.my_toolbar);
-//        mytoolbar.setNavigationIcon(R.drawable.back_btn);
-//        mytoolbar.setTitle("");
-//        setSupportActionBar(mytoolbar);
-//        mytoolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                finish();
-//            }
-//        });
 
         final int movieId = getIntent().getIntExtra("movieId", 0);
         final String posterUrl = getIntent().getStringExtra("posterUrl");
-//
-//        final RecyclerView movieDetail = (RecyclerView) findViewById(R.id.movie_detail_recycler);
-//        movieDetail.getRecycledViewPool().setMaxRecycledViews(0,0);
-//        movieDetail.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
-//            @Override
-//            public void onChildViewAttachedToWindow(View view) {
-//            }
-//
-//            @Override
-//            public void onChildViewDetachedFromWindow(View view) {
-//             movieDetail.getChildLayoutPosition(view);
-//            }
-//        });
-//        MovieDetailAdapter adapter = new MovieDetailAdapter(this, movieId, posterUrl);
-//        movieDetail.setAdapter(adapter);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-//        movieDetail.setLayoutManager(layoutManager);
 
 
         backBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back_btn, 0, 0, 0);
@@ -170,52 +136,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         final FeedDataStore movieTrailerFDS = new MovieTrailerFeedDataStore(this, movieId);
         playbtn.setBackgroundResource(R.drawable.bt_play3);
 
-        final Target mTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-
-                DisplayMetrics metrics = new DisplayMetrics();
-                WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-                wm.getDefaultDisplay().getMetrics(metrics);
-                int targetWidth = metrics.widthPixels;
-                double aspectRatio = (double) bitmap.getHeight() / (double) bitmap.getWidth();
-                int targetHeight = (int) (targetWidth * aspectRatio);
-                ViewGroup.LayoutParams params = videolayout.getLayoutParams();
-                params.height = targetHeight;
-                params.width = metrics.widthPixels;
-                videolayout.setLayoutParams(params);
-                Bitmap result = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, false);
-                BitmapDrawable ob = new BitmapDrawable(getResources(), result);
-                video.setBackground(ob);
-
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                Log.d("failed", "failed");
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        // Create a handler with delay of 500 so these code will run after the image has loaded
 
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Picasso.with(MovieDetailActivity.this)
-                        .load(posterUrl)
-                        .into(mTarget);
+
+                new setTrailerposter(video).execute(posterUrl);
                 setUpTrailer(movieTrailerFDS);
 
-            }
-        }, 500);
 
 
 
@@ -298,44 +224,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                 });
             }
         });
-
-        // Disable input for the schedule before it is ready
-      //  movieSchedule.setEnabled(false);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-
-        // Default schedule selection of Today
-        final int position = 0;
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                movieSchedule.performItemClick(movieSchedule.getAdapter().getView(position, null, movieSchedule), 0, position);
-//                movieSchedule.getAdapter().getView(position, null, movieSchedule).performClick();
-                View v = movieSchedule.getChildAt(position);
-                if (v != null) {
-                    v.setPressed(true);
-                }
-                movieSchedule.setEnabled(true);
-            }
-        }, 500);
-    }
-
-
-
-
 
 
     private void displayScheduleExpandableList(final List<Schedule> scheduleList) {
         // TODO: Simplify this process
-//        List<Integer> cinemaGroupListID = new ArrayList<>();
+
         List<String> cinemaGroupListName = new ArrayList<>();
         for (int i = 0; i < scheduleList.size(); i++) {
 //            cinemaGroupListID.add(scheduleList.get(i).getpCinemaId());
@@ -392,6 +286,42 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     }
 
+    private class setTrailerposter extends AsyncTask<String, Void, Bitmap> {
+        VideoView videoView;
+        private setTrailerposter(VideoView videoView){
+            this.videoView=videoView;
+        }
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            Bitmap poster = getBitmapFromURL(params[0]);
+            return poster;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+            wm.getDefaultDisplay().getMetrics(metrics);
+            int targetWidth = metrics.widthPixels;
+            double aspectRatio = (double) result.getHeight() / (double) result.getWidth();
+            int targetHeight = (int) (targetWidth * aspectRatio);
+            ViewGroup.LayoutParams params = videolayout.getLayoutParams();
+            params.height = targetHeight;
+            params.width = metrics.widthPixels;
+            videolayout.setLayoutParams(params);
+            Bitmap scaledposter = Bitmap.createScaledBitmap(result, targetWidth, targetHeight, false);
+            BitmapDrawable ob = new BitmapDrawable(getResources(), scaledposter);
+            videoView.setBackground(ob);
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+
     public void setUpTrailer(FeedDataStore movieTrailerFDS){
         movieTrailerFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
             @Override
@@ -409,12 +339,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
         progress.setMax(video.getDuration());
         final DecimalFormat formatter = new DecimalFormat("00");
-//                video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//                    @Override
-//                    public void onPrepared(MediaPlayer mediaPlayer) {
-//                        duration.setText(formatter.format((video.getDuration()/1000)/60)+":"+formatter.format(video.getDuration()/1000%60));
-//                    }
-//                });
         progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -477,8 +401,20 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         });
     }
-
-
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
+    }
 
     private Runnable onEverySecond = new Runnable() {
 
@@ -496,65 +432,6 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         }
     };
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MovieDetail Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.dangtuanvn.movie_app/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "MovieDetail Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.dangtuanvn.movie_app/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-
-
-    public void setFirstTab() {
-        int position = 0;
-        movieSchedule.performItemClick(movieSchedule.getAdapter().getView(position, null, movieSchedule), 0, position);
-//                movieSchedule.getAdapter().getView(position, null, movieSchedule).performClick();
-        View v = movieSchedule.getChildAt(position);
-        if (v != null) {
-            v.setPressed(true);
-        }
-        movieSchedule.setEnabled(true);
-    }
-
-
-
-//    @Override
-//    public void onItemClick(View view, Object data, int position) {
-//        Log.i("ITEM CLICK", "" + position);
-//    }
 }
 
 
