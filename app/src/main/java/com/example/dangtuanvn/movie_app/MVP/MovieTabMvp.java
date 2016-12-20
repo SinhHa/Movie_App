@@ -60,6 +60,8 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflateListView(inflater, container);
+        presenter = createPresenter();
+       presenter.attachView(this);
         return view;
     }
 
@@ -80,20 +82,10 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
     }
 
     @Override
-    public void setUpMovies(List<?> data) {
+    public void setUpMovies(final List<?> data) {
         List<Movie> movie = (List<Movie>) data;
         MovieTabAdapter mAdapter = new MovieTabAdapter(getContext(), movie, mPage);
         mRecyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    public void setRefresh(boolean refresh) {
-        swipeLayout.setRefreshing(refresh);
-    }
-
-
-    @Override
-    public void setOnItemTouch(final List<?> datalist) {
         if (!hasTouch) {
             final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -112,7 +104,7 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
                         final View childView = rv.findChildViewUnder(e.getX(), e.getY());
                         if (childView != null && mGestureDetector.onTouchEvent(e)) {
                             List<Movie> list;
-                            list = (List<Movie>) datalist;
+                            list = (List<Movie>) data;
                             Intent intent = new Intent(getContext(), MovieDetailMvp.class);
                             intent.putExtra("movieId", list.get(rv.getChildAdapterPosition(childView)).getFilmId());
                             intent.putExtra("posterUrl", list.get(rv.getChildAdapterPosition(childView)).getPosterLandscape());
@@ -139,16 +131,20 @@ public class MovieTabMvp extends MvpFragment<MovieTabView, MovieTabPresenter> im
             mRecyclerView.addOnItemTouchListener(listener);
             hasTouch = true;
         }
-
     }
+
+    @Override
+    public void setRefresh(boolean refresh) {
+        swipeLayout.setRefreshing(refresh);
+    }
+
 
     @Override
     public void onStart() {
         super.onStart();
-        getPresenter().getMoviesInfo();
         swipeLayout.setOnRefreshListener(creatOnRefreshListener());
+        getPresenter().getMoviesInfo();
     }
-
 
     public SwipeRefreshLayout.OnRefreshListener creatOnRefreshListener() {
         SwipeRefreshLayout.OnRefreshListener refreshListener = new SwipeRefreshLayout.OnRefreshListener() {
