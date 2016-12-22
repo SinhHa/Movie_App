@@ -3,14 +3,18 @@ package com.example.dangtuanvn.movie_app.MVP.Presenter;
 import android.content.Context;
 import com.example.dangtuanvn.movie_app.MVP.Interface.MovieTabPresenter;
 import com.example.dangtuanvn.movie_app.MVP.View.MovieTabView;
+import com.example.dangtuanvn.movie_app.RxJavaDataStore;
 import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.MovieFeedDataStore;
+import com.example.dangtuanvn.movie_app.datastore.RxDataStore;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Observer;
 
 /**
  * Created by sinhhx on 12/19/16.
@@ -38,12 +42,21 @@ public class MovieTabPresenterImp extends MvpNullObjectBasePresenter<MovieTabVie
     }
 
 
-    public void getMoviedata(MovieFeedDataStore movieShowingFDS){
-        movieShowingFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+    public void getMoviedata(RxDataStore movieShowingFDS){
+        movieShowingFDS.newGetRouteData().subscribe(new Observer<List<?>>() {
             @Override
-            public void onDataRetrievedListener(List<?> list, Exception ex) {
+            public void onCompleted() {
 
-                getView().setUpMovies(list);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<?> list) {
+            getView().setUpMovies(list);
             }
         });
     }

@@ -81,18 +81,18 @@ public class NewsTabFragment extends Fragment {
         handlerFDS.postDelayed(new Runnable() {
             @Override
             public void run() {
-                newsFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-                    @Override
-                    public void onDataRetrievedListener(List list, Exception ex) {
-                        List<News> newsList = (List<News>) list;
-                        mAdapter = new NewsTabAdapter(getContext(), newsList);
-                        mRecyclerView.setAdapter((mAdapter));
-                        if (addTouch) {
-                            addOnTouchNewsItem(mRecyclerView, newsList);
-                        }
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
+//                newsFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//                    @Override
+//                    public void onDataRetrievedListener(List list, Exception ex) {
+//                        List<News> newsList = (List<News>) list;
+//                        mAdapter = new NewsTabAdapter(getContext(), newsList);
+//                        mRecyclerView.setAdapter((mAdapter));
+//                        if (addTouch) {
+//                            addOnTouchNewsItem(mRecyclerView, newsList);
+//                        }
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                });
             }
         }, 1000);
     }

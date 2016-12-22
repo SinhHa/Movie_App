@@ -43,6 +43,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import rx.Observer;
+
 /**
  * Created by sinhhx on 11/18/16.
  */
@@ -221,16 +223,26 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
             }, 500);
 
         }
-
+//
         if (position == 1) {
             holder.IMDB.setCompoundDrawablesWithIntrinsicBounds(R.drawable.star_60, 0, 0, 0);
             holder.length.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_clock, 0, 0, 0);
             holder.date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_grey, 0, 0, 0);
 
-            FeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
-            movieDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+            MovieDetailFeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
+            movieDetailFDS.newGetRouteData().subscribe(new Observer<List<?>>() {
                 @Override
-                public void onDataRetrievedListener(List<?> list, Exception ex) {
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<?> list) {
                     List<MovieDetail> detailList = (List<MovieDetail>) list;
                     holder.movieTitle.setText(detailList.get(0).getFilmName());
                     holder.PG.setText(detailList.get(0).getPgRating());
@@ -240,13 +252,24 @@ public class MovieDetailAdapter extends RecyclerView.Adapter<MovieDetailAdapter.
                     holder.date.setText(detailList.get(0).getPublishDate());
                 }
             });
+
         }
 
         if (position == 2) {
-            FeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
-            movieDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+            MovieDetailFeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
+            movieDetailFDS.newGetRouteData().subscribe(new Observer<List<?>>() {
                 @Override
-                public void onDataRetrievedListener(List<?> list, Exception ex) {
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<?> list) {
                     List<MovieDetail> detailList = (List<MovieDetail>) list;
                     holder.movieDescription.setText("" + detailList.get(0).getDescriptionMobile());
                     if (detailList.get(0).getDirectorName() == null) {

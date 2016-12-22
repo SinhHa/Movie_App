@@ -140,29 +140,29 @@ public class AllTabFragment extends Fragment {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             switch (mTab) {
-                case Showing:
-                    view = inflateListView(inflater, container);
-                    final MovieFeedDataStore movieShowingFDS = new MovieFeedDataStore(getContext(),
-                            MovieFeedDataStore.DataType.SHOWING);
-                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                        @Override
-                        public void onRefresh() {
-                            displayMovieList(movieShowingFDS,false);
-                        }
-                    });
-                    displayMovieList(movieShowingFDS,true);
-                    break;
-
-                case Upcoming:
-                    view = inflateListView(inflater, container);
-                    final MovieFeedDataStore movieUpcomingFDS = new MovieFeedDataStore(getContext(), MovieFeedDataStore.DataType.UPCOMING);
-                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                        public void onRefresh() {
-                            displayMovieList(movieUpcomingFDS,false);
-                        }
-                    });
-                    displayMovieList(movieUpcomingFDS,true);
-                    break;
+//                case Showing:
+//                    view = inflateListView(inflater, container);
+//                    final MovieFeedDataStore movieShowingFDS = new MovieFeedDataStore(getContext(),
+//                            MovieFeedDataStore.DataType.SHOWING);
+//                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                        @Override
+//                        public void onRefresh() {
+//                            displayMovieList(movieShowingFDS,false);
+//                        }
+//                    });
+//                    displayMovieList(movieShowingFDS,true);
+//                    break;
+//
+//                case Upcoming:
+//                    view = inflateListView(inflater, container);
+//                    final MovieFeedDataStore movieUpcomingFDS = new MovieFeedDataStore(getContext(), MovieFeedDataStore.DataType.UPCOMING);
+//                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                        public void onRefresh() {
+//                            displayMovieList(movieUpcomingFDS,false);
+//                        }
+//                    });
+//                    displayMovieList(movieUpcomingFDS,true);
+//                    break;
 
                 case Cinema:
                     view = inflateMapView(inflater, container);
@@ -192,47 +192,47 @@ public class AllTabFragment extends Fragment {
         return view;
     }
 
-    public void displayMovieList(final MovieFeedDataStore movieFDS,final boolean addTouch) {
-//        Code to get handler of current Activity
-//        Handler handler = getActivity().getWindow().getDecorView().getHandler();
-//        (new Handler()).post(new Runnable() {
-        swipeLayout.setRefreshing(true);
-        handlerFDS.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                movieFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-                    @Override
-                    public void onDataRetrievedListener(List list, Exception ex) {
-                        final List<Movie> movieList = (List<Movie>) list;
-                        mAdapter = new MovieTabAdapter(getContext(), movieList, mPage);
-                        mRecyclerView.setAdapter((mAdapter));
-                        if (addTouch) {
-                            addOnMovieTouch(movieList);
-                        }
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
-            }
-        }, 1000);
-    }
+//    public void displayMovieList(final MovieFeedDataStore movieFDS,final boolean addTouch) {
+////        Code to get handler of current Activity
+////        Handler handler = getActivity().getWindow().getDecorView().getHandler();
+////        (new Handler()).post(new Runnable() {
+//        swipeLayout.setRefreshing(true);
+//        handlerFDS.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                movieFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//                    @Override
+//                    public void onDataRetrievedListener(List list, Exception ex) {
+//                        final List<Movie> movieList = (List<Movie>) list;
+//                        mAdapter = new MovieTabAdapter(getContext(), movieList, mPage);
+//                        mRecyclerView.setAdapter((mAdapter));
+//                        if (addTouch) {
+//                            addOnMovieTouch(movieList);
+//                        }
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                });
+//            }
+//        }, 1000);
+//    }
 
     public void displayNewsList(final NewsFeedDataStore newsFDS, final boolean addTouch) {
         swipeLayout.setRefreshing(true);
         handlerFDS.postDelayed(new Runnable() {
             @Override
             public void run() {
-                newsFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-                    @Override
-                    public void onDataRetrievedListener(List list, Exception ex) {
-                        List<News> newsList = (List<News>) list;
-                        mAdapter = new NewsTabAdapter(getContext(), newsList);
-                        mRecyclerView.setAdapter((mAdapter));
-                        if (addTouch) {
-                            addOnTouchNewsItem(mRecyclerView, newsList);
-                        }
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
+//                newsFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//                    @Override
+//                    public void onDataRetrievedListener(List list, Exception ex) {
+//                        List<News> newsList = (List<News>) list;
+//                        mAdapter = new NewsTabAdapter(getContext(), newsList);
+//                        mRecyclerView.setAdapter((mAdapter));
+//                        if (addTouch) {
+//                            addOnTouchNewsItem(mRecyclerView, newsList);
+//                        }
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                });
             }
         }, 1000);
     }

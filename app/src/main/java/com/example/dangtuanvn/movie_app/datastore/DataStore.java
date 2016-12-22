@@ -42,7 +42,7 @@ public abstract class DataStore implements FeedDataStore {
                     @Override
                     public void onResponse(String response) {
 //                        Log.i("RESPONSE", "Response is: "+ response);
-                        onDataRetrievedListener.onDataRetrievedListener(handleData(response), null);
+                        handleData(response);
                     }
                 }, new Response.ErrorListener() {
                     @Override

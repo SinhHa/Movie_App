@@ -2,6 +2,7 @@ package com.example.dangtuanvn.movie_app.datastore;
 
 import android.content.Context;
 
+import com.example.dangtuanvn.movie_app.RxJavaDataStore;
 import com.example.dangtuanvn.movie_app.model.Movie;
 
 import com.example.dangtuanvn.movie_app.model.converter.MovieDeserializer;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by dangtuanvn on 11/7/16.
  */
 
-public class MovieFeedDataStore extends DataStore {
+public class MovieFeedDataStore extends RxJavaDataStore {
     private String urlShowing = BASE_URL + "film/list?status=2";
     private String urlUpcoming = BASE_URL + "film/list?status=1";
 

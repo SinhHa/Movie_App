@@ -60,29 +60,29 @@ public class MovieTabFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflateListView(inflater, container);
-            switch (tab) {
-                case Showing:
-                    final MovieFeedDataStore movieShowingFDS = new MovieFeedDataStore(getContext(),
-                            MovieFeedDataStore.DataType.SHOWING);
-                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                        @Override
-                        public void onRefresh() {
-                            displayMovieList(movieShowingFDS, false);
-                        }
-                    });
-                    displayMovieList(movieShowingFDS, true);
-                    break;
-
-                case Upcoming:
-                    final MovieFeedDataStore movieUpcomingFDS = new MovieFeedDataStore(getContext(), MovieFeedDataStore.DataType.UPCOMING);
-                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                        public void onRefresh() {
-                            displayMovieList(movieUpcomingFDS, false);
-                        }
-                    });
-                    displayMovieList(movieUpcomingFDS, true);
-                    break;
-            }
+//            switch (tab) {
+//                case Showing:
+//                    final MovieFeedDataStore movieShowingFDS = new MovieFeedDataStore(getContext(),
+//                            MovieFeedDataStore.DataType.SHOWING);
+//                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                        @Override
+//                        public void onRefresh() {
+//                            displayMovieList(movieShowingFDS, false);
+//                        }
+//                    });
+//                    displayMovieList(movieShowingFDS, true);
+//                    break;
+//
+//                case Upcoming:
+//                    final MovieFeedDataStore movieUpcomingFDS = new MovieFeedDataStore(getContext(), MovieFeedDataStore.DataType.UPCOMING);
+//                    swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                        public void onRefresh() {
+//                            displayMovieList(movieUpcomingFDS, false);
+//                        }
+//                    });
+//                    displayMovieList(movieUpcomingFDS, true);
+//                    break;
+//            }
 
         return view;
     }
@@ -103,29 +103,29 @@ public class MovieTabFragment extends Fragment {
         return view;
     }
 
-    public void displayMovieList(final MovieFeedDataStore movieFDS, final boolean addTouch) {
-//        Code to get handler of current Activity
-//        Handler handler = getActivity().getWindow().getDecorView().getHandler();
-//        (new Handler()).post(new Runnable() {
-        swipeLayout.setRefreshing(true);
-        handlerFDS.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                movieFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-                    @Override
-                    public void onDataRetrievedListener(List list, Exception ex) {
-                        final List<Movie> movieList = (List<Movie>) list;
-                        RecyclerView.Adapter adapter = new MovieTabAdapter(getContext(), movieList, tab.ordinal());
-                        recyclerView.setAdapter((adapter));
-                        if (addTouch) {
-                            addOnMovieTouch(movieList);
-                        }
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
-            }
-        }, 1000);
-    }
+//    public void displayMovieList(final MovieFeedDataStore movieFDS, final boolean addTouch) {
+////        Code to get handler of current Activity
+////        Handler handler = getActivity().getWindow().getDecorView().getHandler();
+////        (new Handler()).post(new Runnable() {
+//        swipeLayout.setRefreshing(true);
+//        handlerFDS.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                movieFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//                    @Override
+//                    public void onDataRetrievedListener(List list, Exception ex) {
+//                        final List<Movie> movieList = (List<Movie>) list;
+//                        RecyclerView.Adapter adapter = new MovieTabAdapter(getContext(), movieList, tab.ordinal());
+//                        recyclerView.setAdapter((adapter));
+//                        if (addTouch) {
+//                            addOnMovieTouch(movieList);
+//                        }
+//                        swipeLayout.setRefreshing(false);
+//                    }
+//                });
+//            }
+//        }, 1000);
+//    }
 
     public void addOnMovieTouch(final List<Movie> movieList) {
         final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {

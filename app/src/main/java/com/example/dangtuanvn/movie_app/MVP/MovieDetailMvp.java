@@ -2,6 +2,7 @@ package com.example.dangtuanvn.movie_app.MVP;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -44,6 +45,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
+
 
 /**
  * Created by sinhhx on 12/19/16.
@@ -361,4 +364,5 @@ public class MovieDetailMvp extends MvpActivity<MovieDetailView,MovieDetailPrese
 
         }
     };
+
 }

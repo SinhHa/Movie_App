@@ -9,8 +9,10 @@ import com.example.dangtuanvn.movie_app.MVP.Interface.MovieDetailPresenter;
 import com.example.dangtuanvn.movie_app.MVP.View.MovieDetailView;
 import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.MovieDetailFeedDataStore;
+import com.example.dangtuanvn.movie_app.datastore.MovieFeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.MovieTrailerFeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.ScheduleFeedDataStore;
+import com.example.dangtuanvn.movie_app.model.MovieDetail;
 import com.example.dangtuanvn.movie_app.model.MovieTrailer;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
@@ -19,6 +21,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+
+import rx.Observer;
 
 /**
  * Created by sinhhx on 12/19/16.
@@ -52,11 +56,21 @@ public class MovieDetailPresenterImp extends MvpNullObjectBasePresenter<MovieDet
 
     @Override
     public void getMovieDiscription(int movieId) {
-        FeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
-        movieDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+       MovieDetailFeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(context, movieId);
+        movieDetailFDS.newGetRouteData().subscribe(new Observer<List<?>>() {
             @Override
-            public void onDataRetrievedListener(List<?> list, Exception ex) {
-            getView().setUpMovieDiscription(list);
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<?> list) {
+                getView().setUpMovieDiscription(list);
             }
         });
     }

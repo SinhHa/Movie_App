@@ -149,35 +149,35 @@ public class MovieDetailActivity extends AppCompatActivity {
         length.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_clock, 0, 0, 0);
         date.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_calendar_grey, 0, 0, 0);
 
-        FeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(this, movieId);
-        movieDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-            @Override
-            public void onDataRetrievedListener(List<?> list, Exception ex) {
-                List<MovieDetail> detailList = (List<MovieDetail>) list;
-                movieTitle.setText(detailList.get(0).getFilmName());
-                PG.setText(detailList.get(0).getPgRating());
-                IMDB.setText(detailList.get(0).getImdbPoint() + " IMDB");
-                String duration = detailList.get(0).getDuration() / 60 + "h " + detailList.get(0).getDuration() % 60 + "min";
-                length.setText(duration);
-                String date_before = detailList.get(0).getPublishDate();
-                String date_after = formateDateFromstring("yyyy-MM-dd", "dd MMM yyyy", date_before);
-                date.setText(date_after);
-                movieDescription.setText("" + detailList.get(0).getDescriptionMobile());
-                if (detailList.get(0).getDirectorName() == null) {
-                    directorName.setText("");
-                } else {
-                    directorName.setText(" " + detailList.get(0).getDirectorName());
-                }
-                String actor = "";
-                for (int i = 0; i < detailList.get(0).getListActors().size(); i++) {
-                    actor = actor + detailList.get(0).getListActors().get(i);
-                    if (i != detailList.get(0).getListActors().size() - 1) {
-                        actor += ", ";
-                    }
-                }
-                starName.setText(" " + actor);
-            }
-        });
+//        FeedDataStore movieDetailFDS = new MovieDetailFeedDataStore(this, movieId);
+//        movieDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//            @Override
+//            public void onDataRetrievedListener(List<?> list, Exception ex) {
+//                List<MovieDetail> detailList = (List<MovieDetail>) list;
+//                movieTitle.setText(detailList.get(0).getFilmName());
+//                PG.setText(detailList.get(0).getPgRating());
+//                IMDB.setText(detailList.get(0).getImdbPoint() + " IMDB");
+//                String duration = detailList.get(0).getDuration() / 60 + "h " + detailList.get(0).getDuration() % 60 + "min";
+//                length.setText(duration);
+//                String date_before = detailList.get(0).getPublishDate();
+//                String date_after = formateDateFromstring("yyyy-MM-dd", "dd MMM yyyy", date_before);
+//                date.setText(date_after);
+//                movieDescription.setText("" + detailList.get(0).getDescriptionMobile());
+//                if (detailList.get(0).getDirectorName() == null) {
+//                    directorName.setText("");
+//                } else {
+//                    directorName.setText(" " + detailList.get(0).getDirectorName());
+//                }
+//                String actor = "";
+//                for (int i = 0; i < detailList.get(0).getListActors().size(); i++) {
+//                    actor = actor + detailList.get(0).getListActors().get(i);
+//                    if (i != detailList.get(0).getListActors().size() - 1) {
+//                        actor += ", ";
+//                    }
+//                }
+//                starName.setText(" " + actor);
+//            }
+//        });
 
         more.setOnClickListener(new View.OnClickListener() {
             @Override
