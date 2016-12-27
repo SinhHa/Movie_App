@@ -8,6 +8,7 @@ import com.example.dangtuanvn.movie_app.MVP.View.NewsTabView;
 import com.example.dangtuanvn.movie_app.datastore.FeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.NewsFeedDataStore;
 import com.example.dangtuanvn.movie_app.datastore.RxDataStore;
+import com.example.dangtuanvn.movie_app.model.News;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import com.hannesdorfmann.mosby.mvp.MvpNullObjectBasePresenter;
 
@@ -20,17 +21,17 @@ import rx.Observer;
  */
 public class NewsTabPresenterImp extends MvpNullObjectBasePresenter<NewsTabView> implements NewsTabPresenter {
     Context context;
+
     public NewsTabPresenterImp(Context context){
         this.context =context;
     }
     @Override
     public void getNewsInfo() {
-        NewsFeedDataStore newsFDS  =
-                new NewsFeedDataStore(context);
+        NewsFeedDataStore newsFDS  = new NewsFeedDataStore();
         getNewsdata(newsFDS);
     }
-    public void getNewsdata(RxDataStore newsFDS){
-      newsFDS.newGetRouteData().subscribe(new Observer<List<?>>() {
+    public void getNewsdata(NewsFeedDataStore newsFDS){
+      newsFDS.getNewsList().subscribe(new Observer<List<News>>() {
           @Override
           public void onCompleted() {
 
@@ -42,7 +43,7 @@ public class NewsTabPresenterImp extends MvpNullObjectBasePresenter<NewsTabView>
           }
 
           @Override
-          public void onNext(List<?> list) {
+          public void onNext(List<News> list) {
 
               getView().setUpNews(list);
           }

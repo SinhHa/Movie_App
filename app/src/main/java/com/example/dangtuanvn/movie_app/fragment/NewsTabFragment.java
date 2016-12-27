@@ -48,7 +48,7 @@ public class NewsTabFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflateListView(inflater, container);
-            final NewsFeedDataStore newsFDS = new NewsFeedDataStore(getContext());
+            final NewsFeedDataStore newsFDS = new NewsFeedDataStore();
             swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -110,7 +110,7 @@ public class NewsTabFragment extends Fragment {
             public boolean onInterceptTouchEvent(final RecyclerView rv, MotionEvent e) {
                 final View childView = rv.findChildViewUnder(e.getX(), e.getY());
                 if (childView != null && mGestureDetector.onTouchEvent(e)) {
-                    displayNewsDetail(rv, childView, newsList);
+//                    displayNewsDetail(rv, childView, newsList);
                 }
                 return false;
             }
@@ -125,20 +125,20 @@ public class NewsTabFragment extends Fragment {
         });
     }
 
-    public void displayNewsDetail(RecyclerView rv, View childView, List<News> newsList) {
-        FeedDataStore newsDetailFDS = new NewsDetailFeedDataStore(getContext(), newsList.get(rv.getChildAdapterPosition(childView)).getNewsId());
-        newsDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-            @Override
-            public void onDataRetrievedListener(List<?> list, Exception ex) {
-                // Start web view
-                Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-                intent.putExtra("data", ((NewsDetail) list.get(0)).getContent());
-//                Log.i("RELATED NEWS", "" + ((NewsDetail) list.get(0)).getRelatedNewsList().get(0).toString());
-//                handlerFDS.removeCallbacksAndMessages(null);
-//                swipeLayout.setRefreshing(false);
-                startActivity(intent);
-            }
-        });
-    }
+//    public void displayNewsDetail(RecyclerView rv, View childView, List<News> newsList) {
+//        FeedDataStore newsDetailFDS = new NewsDetailFeedDataStore(getContext(), newsList.get(rv.getChildAdapterPosition(childView)).getNewsId());
+//        newsDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//            @Override
+//            public void onDataRetrievedListener(List<?> list, Exception ex) {
+//                // Start web view
+//                Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+//                intent.putExtra("data", ((NewsDetail) list.get(0)).getContent());
+////                Log.i("RELATED NEWS", "" + ((NewsDetail) list.get(0)).getRelatedNewsList().get(0).toString());
+////                handlerFDS.removeCallbacksAndMessages(null);
+////                swipeLayout.setRefreshing(false);
+//                startActivity(intent);
+//            }
+//        });
+//    }
 
 }

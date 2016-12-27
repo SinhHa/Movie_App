@@ -77,11 +77,10 @@ public class NewsTabMvp extends MvpFragment<NewsTabView, NewsTabPresenter> imple
     }
 
     @Override
-    public void setUpNews(List<?> data) {
-        List<News> news = (List<News>) data;
+    public void setUpNews(List<News> news) {
         NewsTabAdapter mAdapter = new NewsTabAdapter(getContext(),news);
         mRecyclerView.setAdapter(mAdapter);
-        setOnItemTouch(data);
+        setOnItemTouch(news);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class NewsTabMvp extends MvpFragment<NewsTabView, NewsTabPresenter> imple
 
 
 
-    public void setOnItemTouch(final List<?> datalist) {
+    public void setOnItemTouch(final List<News> list) {
         if (!hasTouch) {
             final GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
                 @Override
@@ -109,8 +108,6 @@ public class NewsTabMvp extends MvpFragment<NewsTabView, NewsTabPresenter> imple
                     if (networkInfo != null && networkInfo.isConnected()) {
                         final View childView = rv.findChildViewUnder(e.getX(), e.getY());
                         if (childView != null && mGestureDetector.onTouchEvent(e)) {
-                            List<News> list;
-                            list = (List<News>) datalist;
                             Intent intent = new Intent(getContext(), NewsDetailActivity.class);
                             intent.putExtra("data", list.get(0).getShortContent());
                             getContext().startActivity(intent);

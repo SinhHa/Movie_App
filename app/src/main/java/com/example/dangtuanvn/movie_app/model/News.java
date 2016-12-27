@@ -1,5 +1,7 @@
 package com.example.dangtuanvn.movie_app.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -8,27 +10,38 @@ import java.util.List;
  */
 
 public class News implements Serializable {
-    private int newsId;
+    @SerializedName("news_id")
+    private int IewsId;
+    @SerializedName("news_title")
     private String newsTitle;
+    @SerializedName("news_description")
     private String newsDescription;
+    @SerializedName("short_content")
     private String shortContent;
+    @SerializedName("film_id")
     private int filmId;
+    @SerializedName("cinema_id")
     private int pCinemaId;
     private List<Integer> listFilm;
     private String url;
+    @SerializedName("date_add")
     private String dateAdd;
+    @SerializedName("date_update")
     private String dateUpdate;
+    @SerializedName("image_full")
     private String imageFull;
+    @SerializedName("image")
     private String imageMedium;
+    @SerializedName("image2x")
     private String imageSmall;
-    private String timeDifference;
+    private String timeDifference="10";
 
     public int getNewsId() {
-        return newsId;
+        return IewsId;
     }
 
     public void setNewsId(int newsId) {
-        this.newsId = newsId;
+        this.IewsId = newsId;
     }
 
     public String getNewsTitle() {

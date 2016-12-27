@@ -1,5 +1,7 @@
 package com.example.dangtuanvn.movie_app.datastore;
 
+import com.example.dangtuanvn.movie_app.model.News;
+
 import java.util.List;
 
 import rx.Observable;

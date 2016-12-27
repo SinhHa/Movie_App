@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.dangtuanvn.movie_app.RxJavaDataStore;
 import com.example.dangtuanvn.movie_app.model.Movie;
 
+import com.example.dangtuanvn.movie_app.model.News;
 import com.example.dangtuanvn.movie_app.model.converter.MovieDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,6 +16,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by dangtuanvn on 11/7/16.
  */
@@ -22,6 +25,7 @@ import java.util.List;
 public class MovieFeedDataStore extends RxJavaDataStore {
     private String urlShowing = BASE_URL + "film/list?status=2";
     private String urlUpcoming = BASE_URL + "film/list?status=1";
+
 
     public enum DataType{
         SHOWING,

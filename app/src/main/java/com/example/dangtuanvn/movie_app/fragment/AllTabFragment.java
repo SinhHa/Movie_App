@@ -173,7 +173,7 @@ public class AllTabFragment extends Fragment {
 
                 case News:
                     view = inflateListView(inflater, container);
-                    final NewsFeedDataStore newsFDS = new NewsFeedDataStore(getContext());
+                    final NewsFeedDataStore newsFDS = new NewsFeedDataStore();
                     swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
@@ -252,7 +252,7 @@ public class AllTabFragment extends Fragment {
                 if (childView != null && mGestureDetector.onTouchEvent(e)) {
                     // Cancel getting data tasks
                     stopGetData();
-                    displayNewsDetail(rv, childView, newsList);
+//                    displayNewsDetail(rv, childView, newsList);
                 }
                 return false;
             }
@@ -506,21 +506,21 @@ public class AllTabFragment extends Fragment {
         return view;
     }
 
-    public void displayNewsDetail(RecyclerView rv, View childView, List<News> newsList) {
-        FeedDataStore newsDetailFDS = new NewsDetailFeedDataStore(getContext(), newsList.get(rv.getChildAdapterPosition(childView)).getNewsId());
-        newsDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
-            @Override
-            public void onDataRetrievedListener(List<?> list, Exception ex) {
-                // Start web view
-                Intent intent = new Intent(getContext(), NewsDetailActivity.class);
-                intent.putExtra("data", ((NewsDetail) list.get(0)).getContent());
-//                Log.i("RELATED NEWS", "" + ((NewsDetail) list.get(0)).getRelatedNewsList().get(0).toString());
-                handlerFDS.removeCallbacksAndMessages(null);
-                swipeLayout.setRefreshing(false);
-                startActivity(intent);
-            }
-        });
-    }
+//    public void displayNewsDetail(RecyclerView rv, View childView, List<News> newsList) {
+//        FeedDataStore newsDetailFDS = new NewsDetailFeedDataStore(getContext(), newsList.get(rv.getChildAdapterPosition(childView)).getNewsId());
+//        newsDetailFDS.getList(new FeedDataStore.OnDataRetrievedListener() {
+//            @Override
+//            public void onDataRetrievedListener(List<?> list, Exception ex) {
+//                // Start web view
+//                Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+//                intent.putExtra("data", ((NewsDetail) list.get(0)).getContent());
+////                Log.i("RELATED NEWS", "" + ((NewsDetail) list.get(0)).getRelatedNewsList().get(0).toString());
+//                handlerFDS.removeCallbacksAndMessages(null);
+//                swipeLayout.setRefreshing(false);
+//                startActivity(intent);
+//            }
+//        });
+//    }
 
     @Override
     public void onStop() {

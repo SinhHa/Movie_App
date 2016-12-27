@@ -2,6 +2,7 @@ package com.example.dangtuanvn.movie_app.datastore;
 
 import android.content.Context;
 
+import com.example.dangtuanvn.movie_app.RxJavaDataStore;
 import com.example.dangtuanvn.movie_app.model.NewsDetail;
 import com.example.dangtuanvn.movie_app.model.converter.NewsDetailDeserializer;
 import com.google.gson.Gson;
@@ -14,11 +15,13 @@ import java.util.List;
 import java.lang.reflect.Type;
 import java.util.Collections;
 
+import rx.Observable;
+
 /**
  * Created by dangtuanvn on 11/14/16.
  */
 
-public class NewsDetailFeedDataStore extends DataStore {
+public class NewsDetailFeedDataStore extends RxJavaDataStore {
     private String url = BASE_URL + "news/detail?news_id=";
     private int newsId;
 

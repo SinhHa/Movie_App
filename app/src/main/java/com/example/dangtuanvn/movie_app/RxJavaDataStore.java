@@ -49,9 +49,10 @@ public abstract class RxJavaDataStore implements RxDataStore {
                                         (Request.Method.GET, url, new Response.Listener<String>() {
                                             @Override
                                             public void onResponse(String response) {
-                                                subscriber.onNext(handleData(response));
-                                                subscriber.onCompleted();
-
+                                                if(!subscriber.isUnsubscribed()){
+                                                    subscriber.onNext(handleData(response));
+                                                    subscriber.onCompleted();
+                                                }
                                             }
                                         }, new Response.ErrorListener() {
                                             @Override
@@ -82,7 +83,6 @@ public abstract class RxJavaDataStore implements RxDataStore {
             }
         });
     }
-
     // http://stackoverflow.com/questions/4846484/md5-hashing-in-android
     private String hashMd5(final String s) {
         final String MD5 = "MD5";
@@ -111,6 +111,10 @@ public abstract class RxJavaDataStore implements RxDataStore {
     protected List<?> handleData(String response){
         return null;
     }
+    protected List<?> handleData(String response,int id){
+        return null;
+    }
+
     protected String setUrl(){
         return BASE_URL;
     }
