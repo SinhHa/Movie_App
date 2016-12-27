@@ -22,6 +22,7 @@ public class News implements Serializable {
     private int filmId;
     @SerializedName("cinema_id")
     private int pCinemaId;
+    @SerializedName("list_film")
     private List<Integer> listFilm;
     private String url;
     @SerializedName("date_add")

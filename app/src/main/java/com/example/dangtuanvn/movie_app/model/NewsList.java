@@ -14,4 +14,6 @@ import java.util.List;
 public class NewsList  implements Serializable {
    @SerializedName("result")
    public List<News> news;
+
+   public int status;
 }

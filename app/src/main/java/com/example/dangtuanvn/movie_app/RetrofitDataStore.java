@@ -3,20 +3,11 @@ package com.example.dangtuanvn.movie_app;
 
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.example.dangtuanvn.movie_app.datastore.RxDataStore;
-import com.example.dangtuanvn.movie_app.datastore.SingletonQueue;
-import com.example.dangtuanvn.movie_app.model.News;
 import com.example.dangtuanvn.movie_app.model.NewsList;
-
-
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -57,34 +48,7 @@ public class RetrofitDataStore implements RxDataStore {
                 return Observable.create(new Observable.OnSubscribe<List<?>>() {
                     @Override
                     public void call(final Subscriber<? super List<?>> subscriber) {
-                        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-                        httpClient.addInterceptor(new Interceptor() {
-                            @Override
-                            public okhttp3.Response intercept(Chain chain) throws IOException {
-                                Request original = chain.request();
-                                Map<String, String> params = new HashMap<>();
-                                long timestamp = TimeUnit.MILLISECONDS.toSeconds(new Date().getTime());
-                                String accessToken = hashMd5(X123F_TOKEN + timestamp) + " " + timestamp;
-                                // Request customization: add request headers
-
-
-
-
-
-                                params.put("X-123F-Version", X123F_VERSION);
-                                params.put("X-123F-Token", accessToken);
-
-
-                                Request request = original.newBuilder()
-                                        .header("X-123F-Version", X123F_VERSION)
-                                        .header("X-123F-Token", accessToken)
-                                        .build();
-
-                                return chain.proceed(request);
-                            }
-                        });
-
-                        OkHttpClient client = httpClient.build();
+                        OkHttpClient client = setUpHeader();
                         Retrofit retrofit = new Retrofit.Builder()
                                 .baseUrl(BASE_URL)
                                 .addConverterFactory(GsonConverterFactory.create())
@@ -111,6 +75,38 @@ public class RetrofitDataStore implements RxDataStore {
                 });
             }
         });
+    }
+
+    public OkHttpClient setUpHeader(){
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+                Map<String, String> params = new HashMap<>();
+                long timestamp = TimeUnit.MILLISECONDS.toSeconds(new Date().getTime());
+                String accessToken = hashMd5(X123F_TOKEN + timestamp) + " " + timestamp;
+                // Request customization: add request headers
+
+
+
+
+
+                params.put("X-123F-Version", X123F_VERSION);
+                params.put("X-123F-Token", accessToken);
+
+
+                Request request = original.newBuilder()
+                        .header("X-123F-Version", X123F_VERSION)
+                        .header("X-123F-Token", accessToken)
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
+
+        OkHttpClient client = httpClient.build();
+        return client;
     }
 
     // http://stackoverflow.com/questions/4846484/md5-hashing-in-android
